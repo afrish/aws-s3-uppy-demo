@@ -36,31 +36,6 @@ app.get('/', (req, res) => {
   res.sendFile(htmlPath)
 })
 
-app.post('/sign-s3', (req, res) => {
-  const s3 = getS3Client()
-  const Key = `${crypto.randomUUID()}-${req.body.filename}`
-  const { contentType } = req.body
-  const s3Params = {
-    Bucket: process.env.COMPANION_AWS_BUCKET,
-    Key,
-    Expires: expires,
-    ContentType: contentType,
-  }
-
-  s3.getSignedUrl('putObject', s3Params, (err, data, next) => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    const returnData = {
-      url: data,
-      method: 'PUT',
-    }
-    res.write(JSON.stringify(returnData))
-    res.end()
-  })
-})
-
 //  === <S3 Multipart> ===
 // You can remove those endpoints if you only want to support the non-multipart uploads.
 
